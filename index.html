@@ -310,7 +310,31 @@ setInterval(()=>cp.style.display==='block'&&cbuild(),500);
 cp.onclick=e=>{const i=e.target.dataset.i;if(i==null)return;const r=REC[i];for(const k in r[1])inv[k]-=r[1][k];inv[r[0]]=(inv[r[0]]||0)+1;pop(P.x,P.y-10,'ساخته شد: '+ITEMS[r[0]]);cbuild()};
 ci.onkeydown=e=>{if(e.key==='Enter'&&ci.value.trim()){const s=ci.value.trim();ci.value='';s[0]==='/'?cmd(s):say('<'+pName+'> '+s)}else if(e.key==='Escape')ch.style.display='none'};
 sl.onclick=()=>{clk=Math.floor(clk/30600)*30600+30600;pop(P.x,P.y-20,'☀ صبح بخیر!')};
-let last=0;
+// ---- اتصال به سرور چندنفره ----
+const SERVER = "wss://minecraft-2d-server.saraninastaran9833.workers.dev/room/main";
+let ws = null, myId = null;
+const others = {};   // بازیکن‌های دیگر؛ کلیدشان id است
+
+function connect() {
+  ws = new WebSocket(SERVER + "?name=" + encodeURIComponent(pName));
+  ws.onopen = () => console.log("به سرور وصل شد");
+  ws.onclose = () => console.log("از سرور قطع شد");
+  ws.onmessage = e => {
+    let m;
+    try { m = JSON.parse(e.data); } catch { return; }
+
+    if (m.type === "welcome") {
+      myId = m.player.id;
+      m.players.forEach(p => others[p.id] = p);
+    } else if (m.type === "player_joined" || m.type === "player_moved") {
+      others[m.player.id] = m.player;
+    } else if (m.type === "player_left") {
+      delete others[m.playerId];
+    }
+    console.log(m.type, "| تعداد بازیکن‌های دیگر:", Object.keys(others).length);
+  };
+}
+ let last=0;
 function loop(t){const d=Math.min(2,(t-last)/16.67||1);last=t;upd(d);draw();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 </script></body></html>
