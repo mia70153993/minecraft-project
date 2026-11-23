@@ -302,7 +302,7 @@ function cmd(s){const a=s.split(/\s+/),c=a[0].toLowerCase();
  else if(c==='/help')say('/give <اسم> <آیتم> [تعداد] | /time day|night | /summon sheep|cow|chicken|creeper','#ff9');
  else say('دستور ناشناخته. /help','#f88')}
 function cbuild(){cp.innerHTML=REC.map((r,i)=>{const need=Object.entries(r[1]).map(([k,v])=>ITEMS[k]+' '+(inv[k]||0)+'/'+v).join(' + ');const ok=Object.entries(r[1]).every(([k,v])=>(inv[k]||0)>=v)&&(!r[2]||inv.table>0);return '<div class=r><span>'+ITEMS[r[0]]+'<small>'+need+(r[2]?' | نیاز به میزکار':'')+'</small></span><button data-i='+i+(ok?'':' disabled')+'>بساز</button></div>'}).join('')}
-function start(){pName=(ni.value||'Steve').trim().replace(/\s+/g,'_').slice(0,16)||'Steve';$('nm').style.display='none';started=true;ch.style.display='block';say('خوش اومدی '+pName+'! برای راهنما /help','#ff9');setTimeout(()=>ch.style.display='none',6000)}
+function start(){pName=(ni.value||'Steve').trim().replace(/\s+/g,'_').slice(0,16)||'Steve';$('nm').style.display='none';started=true;connect();ch.style.display='block';say('خوش اومدی '+pName+'! برای راهنما /help','#ff9');setTimeout(()=>ch.style.display='none',6000)}
 $('ns').onclick=start;ni.onkeydown=e=>{if(e.key==='Enter')start()};ni.focus();
 $('mb').onclick=()=>{ch.style.display=ch.style.display==='block'?'none':'block';if(ch.style.display==='block')ci.focus()};
 $('cb').onclick=()=>{cp.style.display=cp.style.display==='block'?'none':'block';cbuild()};
