@@ -82,7 +82,7 @@ const JM=22,JO=10,JR=JM+JO,B=new Uint8Array(NT*JR);let camY=0,tg=null;
 const gb=(tx,j)=>tx<0||tx>=NT||j<-JO||j>=JM?0:B[tx*JR+j+JO];
 function surf(tx){for(let j=-JO;j<JM;j++){const v=B[tx*JR+j+JO];if(v>0&&v<10){hg[tx]=-j;return}}}
 function setB(tx,j,v){B[tx*JR+j+JO]=v;surf(tx)}
-const sol=(tx,j)=>tx<0||tx>=NT||j>=JM?true:j<-JO?false:B[tx*JR+j+JO]>0;
+const sol=(tx,j)=>{if(tx<0||tx>=NT||j>=JM)return true;if(j<-JO)return false;const id=B[tx*JR+j+JO];return id>0&&id!==10&&id!==11};
 function ov(x,y){const a=Math.floor(x/T),b=Math.floor((x+P.w-1)/T),c=Math.floor((y-GY)/T),e=Math.floor((y+P.h-1-GY)/T);for(let i=a;i<=b;i++)for(let j=c;j<=e;j++)if(sol(i,j))return true;return false}
 function growTree(tx){if(tx<1||tx>=NT-1)return;const j0=-hg[tx]-1,tl=bio(tx*T)===4?6:4,wb=tl>4?1:0;for(let q=0;q<tl;q++)if(gb(tx,j0-q))return;
  for(const [dj,w] of [[tl-1,2+wb],[tl,2+wb],[tl+1,1+wb]])for(let c=-w;c<=w;c++)if(j0-dj>=-JO&&!gb(tx+c,j0-dj)&&tx+c>=0&&tx+c<NT)B[(tx+c)*JR+j0-dj+JO]=11;
