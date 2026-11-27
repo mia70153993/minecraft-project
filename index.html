@@ -33,7 +33,9 @@ button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity
 <script>
 const cv=document.getElementById('c'),g=cv.getContext('2d');
 const H=450,T=40,GY=330,WW=3600;let W=800;
-const SN=1150,NT=90,hg=[];(()=>{let h=0;for(let i=0;i<NT;i++){const x=i*T;if(x<80||(x>780&&x<1500)||x>2700)h-=Math.sign(h);else if(Math.random()<.5)h=Math.max(-2,Math.min(4,h+(Math.random()<.5?-1:1)));hg.push(h)}})();
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const trnd=mulberry32(20261123);
+const SN=1150,NT=90,hg=[];(()=>{let h=0;for(let i=0;i<NT;i++){const x=i*T;if(x<80||(x>780&&x<1500)||x>2700)h-=Math.sign(h);else if(trnd()<.5)h=Math.max(-2,Math.min(4,h+(trnd()<.5?-1:1)));hg.push(h)}})();
 function gy(x){return GY-hg[Math.max(0,Math.min(NT-1,Math.floor(x/T)))]*T}
 function go(x){return gy(x)-GY}
 function gt(){return Math.min(gy(P.x+2),gy(P.x+P.w-2))}
@@ -254,7 +256,7 @@ function drawSheep(s){
 }
 function arm(a,ph){g.save();g.translate(0,20);g.rotate(a);rc(-4,0,8,12,'#00a8a8');rc(-4,12,8,16,'#c68863');g.restore()}
 function leg(a){g.save();g.translate(0,48);g.rotate(a);rc(-4,0,8,30,'#3b3b9b');rc(-4,24,8,6,'#555');g.restore()}
-function drawPlayer(){
+function drawChar(P){
  g.save();g.translate(Math.round(P.x+P.w/2-cam),Math.round(P.y));g.scale(P.f,1);
  const w=Math.sin(P.wk)*P.amp*.8,q=P.sw>0?-1.7*Math.sin(P.sw/12*Math.PI):0;
  arm(-w*.9,0);leg(-w);
@@ -264,6 +266,7 @@ function drawPlayer(){
  leg(w);arm(w*.9+q,1);
  g.restore();
 }
+function drawPlayer(){drawChar(P)}
 function icon(i,x,y){
  if(i===0){rc(x+14,y+14,24,24,'#7a4e26');rc(x+20,y+20,12,12,'#c19a5b');rc(x+14,y+14,24,4,'#5e3a1a')}
  else if(i===2){rc(x+14,y+16,24,20,'#555');rc(x+18,y+20,6,6,'#888');rc(x+28,y+26,6,6,'#333')}else{rc(x+12,y+16,28,18,'#d9534f');rc(x+16,y+19,16,6,'#f08c88');rc(x+36,y+22,8,4,'#fff');rc(x+40,y+20,4,8,'#fff')}
@@ -283,7 +286,7 @@ function drawHUD(){
 }
 function draw(){
  g.save();if(shk>0)g.translate((R()-.5)*8,(R()-.5)*8);drawSky();drawTerrain();drawFlowers();drawVillage();
- trees.forEach(t=>at(t,drawTree));sheep.forEach(s=>at(s,s.k==2?drawChicken:s.k?drawCow:drawSheep));creepers.forEach(c=>at(c,drawCreeper));drops.forEach(drawDrop);drawPlayer();drawName();
+ trees.forEach(t=>at(t,drawTree));sheep.forEach(s=>at(s,s.k==2?drawChicken:s.k?drawCow:drawSheep));creepers.forEach(c=>at(c,drawCreeper));drops.forEach(drawDrop);drawOthers();drawPlayer();drawName();
  for(const p of parts)rc(p.x-cam,p.y,5,5,p.c);
  g.textAlign='center';g.font='bold 18px sans-serif';g.lineWidth=4;g.strokeStyle='#000';g.fillStyle='#ffe95c';
  for(const t of txt){g.globalAlpha=Math.min(1,t.l/20);g.strokeText(t.s,t.x-cam,t.y);g.fillText(t.s,t.x-cam,t.y)}
@@ -316,27 +319,86 @@ const SERVER = "wss://minecraft-2d-server.saraninastaran9833.workers.dev/room/ma
 let ws = null, myId = null;
 const others = {};   // بازیکن‌های دیگر؛ کلیدشان id است
 
+// ساخت یا به‌روزرسانی یک بازیکن دیگر (snap: بدون نرم‌کردن، مستقیم بپر به آن نقطه)
+function setOther(p, snap) {
+  let o = others[p.id];
+  if (!o) {
+    o = others[p.id] = { x: p.x, y: p.y, w: 18, h: 78, f: 1, wk: 0, amp: 0, sw: 0 };
+    snap = true;
+  }
+  o.name = p.name;
+  o.f = p.facing;
+  o.tx = p.x;          // مقصدی که سرور گفته
+  o.ty = p.y;
+  if (snap) { o.x = p.x; o.y = p.y; }
+}
+
 function connect() {
   ws = new WebSocket(SERVER + "?name=" + encodeURIComponent(pName));
   ws.onopen = () => console.log("به سرور وصل شد");
-  ws.onclose = () => console.log("از سرور قطع شد");
+  ws.onclose = () => {
+    console.log("از سرور قطع شد");
+    for (const id in others) delete others[id];
+  };
   ws.onmessage = e => {
     let m;
     try { m = JSON.parse(e.data); } catch { return; }
 
     if (m.type === "welcome") {
       myId = m.player.id;
-      m.players.forEach(p => others[p.id] = p);
-    } else if (m.type === "player_joined" || m.type === "player_moved") {
-      others[m.player.id] = m.player;
+      m.players.forEach(p => setOther(p, true));
+    } else if (m.type === "player_joined") {
+      setOther(m.player, true);
+    } else if (m.type === "player_moved") {
+      setOther(m.player, false);
     } else if (m.type === "player_left") {
       delete others[m.playerId];
     }
-    console.log(m.type, "| تعداد بازیکن‌های دیگر:", Object.keys(others).length);
   };
 }
 
+// فرستادن موقعیت خودمان: حداکثر ۲۰ بار در ثانیه و فقط وقتی چیزی عوض شده
+let lastSent = { x: null, y: null, f: null }, lastSendT = 0;
+function sendPos(t) {
+  if (!ws || ws.readyState !== 1) return;
+  if (t - lastSendT < 50) return;
+  const x = Math.round(P.x), y = Math.round(P.y);
+  if (x === lastSent.x && y === lastSent.y && P.f === lastSent.f) return;
+  lastSendT = t;
+  lastSent = { x, y, f: P.f };
+  ws.send(JSON.stringify({ type: "move", x, y, facing: P.f }));
+}
+
+// حالت نمایشی بازیکن‌های دیگر: نرم حرکت می‌کنند و از روی تغییر موقعیت حالتشان فهمیده می‌شود
+function updOthers(d) {
+  for (const id in others) {
+    const o = others[id];
+    const dx = o.tx - o.x;
+    if (Math.abs(dx) > 300) { o.x = o.tx; o.y = o.ty; }   // فاصلهٔ خیلی زیاد: بپر
+    const k = Math.min(1, .35 * d);
+    o.x += (o.tx - o.x) * k;
+    o.y += (o.ty - o.y) * k;
+    const moving = Math.abs(o.tx - o.x) > .6;                // هنوز در حال رسیدن به مقصد
+    const floor = Math.min(gy(o.x + 2), gy(o.x + o.w - 2));
+    const grounded = o.y + o.h >= floor - 3;                 // پاها روی زمین است؟
+    o.amp += ((moving && grounded ? 1 : 0) - o.amp) * .2;   // در هوا یا ایستاده: پاها ثابت
+    o.wk += .25 * d;
+  }
+}
+
+function drawOthers() {
+  for (const id in others) {
+    const o = others[id];
+    const sx = o.x + o.w / 2 - cam;
+    if (sx < -60 || sx > W + 60) continue;
+    drawChar(o);
+    g.textAlign = 'center'; g.font = 'bold 12px sans-serif'; g.lineWidth = 3;
+    g.strokeStyle = '#000'; g.fillStyle = '#fff';
+    g.strokeText(o.name, sx, o.y - 8); g.fillText(o.name, sx, o.y - 8);
+  }
+}
+
 let last=0;
-function loop(t){const d=Math.min(2,(t-last)/16.67||1);last=t;upd(d);draw();requestAnimationFrame(loop)}
+function loop(t){const d=Math.min(2,(t-last)/16.67||1);last=t;upd(d);updOthers(d);sendPos(t);draw();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 </script></body></html>
