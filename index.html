@@ -316,7 +316,7 @@ sl.onclick=()=>{clk=Math.floor(clk/30600)*30600+30600;pop(P.x,P.y-20,'☀ صبح
 
 // ---- اتصال به سرور چندنفره ----
 const SERVER = "wss://minecraft-2d-server.saraninastaran9833.workers.dev/room/main";
-let ws = null, myId = null;
+let ws = null, myId = null, netStatus = "در حال اتصال…";
 const others = {};   // بازیکن‌های دیگر؛ کلیدشان id است
 
 // ساخت یا به‌روزرسانی یک بازیکن دیگر (snap: بدون نرم‌کردن، مستقیم بپر به آن نقطه)
@@ -336,10 +336,13 @@ function setOther(p, snap) {
 function connect() {
   ws = new WebSocket(SERVER + "?name=" + encodeURIComponent(pName));
   ws.onopen = () => {
+    netStatus = "متصل";
     console.log("به سرور وصل شد");
     sendPos(performance.now(), true);
   };
-  ws.onclose = () => {
+  ws.onerror = () => { netStatus = "خطا در اتصال"; };
+  ws.onclose = e => {
+    netStatus = "قطع شد (کد " + e.code + ")";
     console.log("از سرور قطع شد");
     for (const id in others) delete others[id];
   };
@@ -394,10 +397,10 @@ function updOthers(d) {
 }
 
 function drawOnline() {
-  if (!ws || ws.readyState !== 1) return;
+  if (!ws) return;
   g.textAlign = 'center'; g.font = 'bold 13px sans-serif'; g.lineWidth = 3;
   g.strokeStyle = '#000'; g.fillStyle = '#fff';
-  const s = 'آنلاین: ' + (Object.keys(others).length + 1);
+  const s = (ws.readyState === 1 ? 'آنلاین: ' + (Object.keys(others).length + 1) : netStatus) + '  |  v3';
   g.strokeText(s, W / 2, 20); g.fillText(s, W / 2, 20);
 }
 
