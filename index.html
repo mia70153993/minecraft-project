@@ -18,7 +18,7 @@ button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity
 #cp{top:calc(64px + env(safe-area-inset-top,0px));right:8px;width:min(86vw,300px);max-height:60vh;overflow:auto;padding:6px}
 .r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 2px;border-bottom:1px solid #6b4a2a}
 .r small{display:block;opacity:.75;font-size:11px}
-#ch{left:8px;bottom:110px;width:min(90vw,420px);padding:6px}#cl{min-height:20px;margin-bottom:6px;font-size:13px}#ch input{width:100%;box-sizing:border-box}
+#ch{left:8px;bottom:110px;width:min(90vw,420px);max-height:44vh;overflow:hidden;padding:7px;box-sizing:border-box}#chatHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:#ffe3ae}#chatState{font-size:10px;opacity:.8}#cl{min-height:20px;max-height:27vh;overflow:auto;margin-bottom:7px;font-size:13px;line-height:1.5;overflow-wrap:anywhere}#ch input{width:100%;box-sizing:border-box}
 #hb{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:flex;gap:2px;z-index:4;--s:clamp(24px,calc((100vw - 360px)/10),40px)}
 .sl{width:var(--s);height:var(--s);box-sizing:border-box;background:#8b8b8b;border:2px solid;border-color:#373737 #fff #fff #373737;position:relative;display:flex;align-items:center;justify-content:center;font-size:calc(var(--s)*.6);color:#fff}
 #hb .sl{background:rgba(40,28,16,.75);border-color:#1a1208 #6b5a45 #6b5a45 #1a1208}
@@ -54,7 +54,7 @@ button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity
 <div id="adminGate"><div class="admin-card"><b>🔐 ورود به پنل ادمین</b><small>رمز مخصوص ادمین را وارد کن</small><input id="adminPass" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="رمز عبور"><div style="display:flex;gap:8px"><button id="adminSubmit" style="flex:1">ورود</button><button id="adminCancel">لغو</button></div><div id="adminMsg"></div></div></div>
 <div id="adminPanel"><div class="admin-head"><span>👑 پنل ادمین mia70153993</span><button class="admin-close" id="adminPanelClose">✕</button></div><div class="admin-row"><button id="adminFlyToggle">✈️ شروع پرواز</button><button id="adminSpeedToggle">⚡ سرعت بیشتر: خاموش</button></div><div class="admin-row"><button id="adminUp">⬆ نگه‌دار: بالا</button><button id="adminDown">⬇ نگه‌دار: پایین</button></div><small id="adminInfo">حرکت: دکمه‌های چپ و راست. بالا/پایین را نگه دار تا ارتفاع تغییر کند. کیبورد: W/↑ و S/↓.</small><div class="admin-row"><button id="adminLock">🔒 قفل پنل ادمین</button></div></div>
 <div id="cp"></div><div id="hb"></div><div id="iv"><div id="ip"><div id="top"><canvas id="sk" width="80" height="110"></canvas><div id="cr"><div>ساخت</div><div id="gr"></div></div><div id="ar">➜</div><div id="ou"></div><div id="cu"></div><button id="xb">✕</button></div><div id="mn" class="g9"></div><div id="hr" class="g9"></div></div></div>
-<div id="ch"><div id="cl"></div><input id="ci" placeholder="/give اسم آیتم 5" autocomplete="off"></div>
+<div id="ch"><div id="chatHead"><b>💬 چت عمومی</b><span id="chatState">در انتظار اتصال…</span></div><div id="cl" aria-live="polite"></div><input id="ci" maxlength="180" placeholder="پیام بنویس یا /..." autocomplete="off"></div>
 <div class="b" id="sl" style="left:50%;margin-left:-36px;bottom:calc(96px + env(safe-area-inset-bottom,0px));display:none">😴<small>خواب</small></div>
 <div id="st"></div><div id="ps">☠ مسموم شدی!</div><div id="dd"><b>مُردی!</b><button id="rs">ریسپاون</button></div>
 <div class="b" data-k="l" style="left:calc(12px + env(safe-area-inset-left,0px))">◀</div>
@@ -411,14 +411,14 @@ const $=id=>document.getElementById(id),cp=$('cp'),ch=$('ch'),cl=$('cl'),ci=$('c
 function say(s,c){const l=document.createElement('div');l.textContent=s;if(c)l.style.color=c;cl.appendChild(l);while(cl.children.length>6)cl.firstChild.remove()}
 function fnd(a){a=(a||'').toLowerCase();a=ALIAS[a]||a;if(ITEMS[a])return a;for(const k in ITEMS)if(ITEMS[k]===a)return k}
 function cmd(s){const a=s.split(/\s+/),c=a[0].toLowerCase();
- if(c==='/give'){if(a.length<3)return say('استفاده: /give <اسم_بازیکن> <آیتم> [تعداد]','#f88');
-  if(!['@s','me',pName.toLowerCase()].includes(a[1].toLowerCase()))return say('بازیکن «'+a[1]+'» پیدا نشد','#f88');
-  const k=fnd(a[2]);if(!k)return say('آیتم نامعتبر. آیتم‌ها: '+Object.keys(ITEMS).join(', '),'#f88');
+ if(c==='/give'){if(a.length<3)return say('دستور ناقص است. از /... استفاده کن.','#f88');
+  if(!['@s','me',pName.toLowerCase()].includes(a[1].toLowerCase()))return say('این بازیکن پیدا نشد.','#f88');
+  const k=fnd(a[2]);if(!k)return say('آیتم نامعتبر است.','#f88');
   const n=Math.max(1,Math.min(999,parseInt(a[3])||1));inv[k]=(inv[k]||0)+n;say('به '+pName+' '+n+' '+ITEMS[k]+' داده شد','#8f8')}
- else if(c==='/time'){const b=Math.floor(clk/30600)*30600;if(a[1]==='day')clk=b;else if(a[1]==='night')clk=b+25800;else return say('/time day|night','#f88');say('زمان تغییر کرد','#8f8')}
- else if(c==='/summon'){const m={sheep:addSheep,cow:addCow,chicken:addChick,creeper:addCreeper}[a[1]];if(!m)return say('/summon sheep|cow|chicken|creeper','#f88');m(P.x+80*P.f);say(a[1]+' ظاهر شد','#8f8')}
- else if(c==='/help')say('/give <اسم> <آیتم> [تعداد] | /time day|night | /summon sheep|cow|chicken|creeper','#ff9');
- else say('دستور ناشناخته. /help','#f88')}
+ else if(c==='/time'){const b=Math.floor(clk/30600)*30600;if(a[1]==='day')clk=b;else if(a[1]==='night')clk=b+25800;else return say('دستور زمان نامعتبر است.','#f88');say('زمان تغییر کرد','#8f8')}
+ else if(c==='/summon'){const m={sheep:addSheep,cow:addCow,chicken:addChick,creeper:addCreeper}[a[1]];if(!m)return say('نوع موجود نامعتبر است.','#f88');m(P.x+80*P.f);say('موجود ظاهر شد','#8f8')}
+ else if(c==='/help')say('دستورها با / شروع می‌شوند: /...','#ff9');
+ else say('دستور ناشناخته. /...','#f88')}
 function cbuild(){cp.innerHTML=REC.map((r,i)=>{const need=Object.entries(r[1]).map(([k,v])=>ITEMS[k]+' '+(inv[k]||0)+'/'+v).join(' + ');const ok=Object.entries(r[1]).every(([k,v])=>(inv[k]||0)>=v)&&(!r[2]||inv.table>0)&&(!r[3]||inv.furnace>0);return '<div class=r><span>'+ITEMS[r[0]]+'<small>'+need+(r[2]?' | نیاز به میزکار':'')+(r[3]?' | نیاز به فر':'')+'</small></span><button data-i='+i+(ok?'':' disabled')+'>بساز</button></div>'}).join('')}
 function normalizePin(v){return String(v).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).trim()}
 function refreshAdminPanel(){
@@ -456,13 +456,26 @@ function bindAdminHold(id,key){
  el.addEventListener('pointerdown',down);['pointerup','pointercancel','pointerleave','lostpointercapture'].forEach(t=>el.addEventListener(t,up));
 }
 bindAdminHold('adminUp','fu');bindAdminHold('adminDown','fd');
-function start(){pName=(ni.value||'Steve').trim().replace(/\s+/g,'_').slice(0,16)||'Steve';$('adminBtn').style.display=pName===ADMIN_NAME?'inline-block':'none';$('nm').style.display='none';started=true;initAudio();connect();ch.style.display='block';say('خوش اومدی '+pName+'! برای راهنما /help','#ff9');setTimeout(()=>ch.style.display='none',6000)}
+function start(){pName=(ni.value||'Steve').trim().replace(/\s+/g,'_').slice(0,16)||'Steve';$('adminBtn').style.display=pName===ADMIN_NAME?'inline-block':'none';$('nm').style.display='none';started=true;initAudio();connect();ch.style.display='block';say('خوش اومدی '+pName+'! پیام عادی برای همه فرستاده می‌شود. دستورها با / شروع می‌شوند.','#ff9');setTimeout(()=>ch.style.display='none',6000)}
 $('ns').onclick=start;ni.onkeydown=e=>{if(e.key==='Enter')start()};ni.focus();
 $('mb').onclick=()=>{ch.style.display=ch.style.display==='block'?'none':'block';if(ch.style.display==='block')ci.focus()};
 $('cb').onclick=()=>{cp.style.display=cp.style.display==='block'?'none':'block';cbuild()};
 setInterval(()=>cp.style.display==='block'&&cbuild(),500);
 cp.onclick=e=>{const i=e.target.dataset.i;if(i==null)return;const r=REC[i];for(const k in r[1])inv[k]-=r[1][k];inv[r[0]]=(inv[r[0]]||0)+1;pop(P.x,P.y-10,'ساخته شد: '+ITEMS[r[0]]);cbuild()};
-ci.onkeydown=e=>{if(e.key==='Enter'&&ci.value.trim()){const s=ci.value.trim();ci.value='';s[0]==='/'?cmd(s):say('<'+pName+'> '+s)}else if(e.key==='Escape')ch.style.display='none'};
+function sendChatMessage(message){
+ const text=String(message||'').trim().slice(0,180);
+ if(!text)return;
+ if(!ws||ws.readyState!==WebSocket.OPEN){say('اتصال چت برقرار نیست؛ دوباره وارد بازی شو.','#f88');return;}
+ try{ws.send(JSON.stringify({type:'chat',name:pName,text}));}
+ catch(err){say('پیام فرستاده نشد.','#f88');}
+}
+ci.onkeydown=e=>{
+ if(e.key==='Enter'&&ci.value.trim()){
+  const s=ci.value.trim();ci.value='';
+  if(s.startsWith('/')){say('<'+pName+'> /...','#c7b8ff');cmd(s);}
+  else sendChatMessage(s);
+ }else if(e.key==='Escape')ch.style.display='none';
+};
 sl.onclick=()=>{clk=Math.floor(clk/30600)*30600+30600;spawnX=P.x;pop(P.x,P.y-20,'☀ صبح بخیر! ریسپاون ثبت شد')};
 
 // ---- اتصال به سرور چندنفره ----
@@ -488,12 +501,14 @@ function connect() {
   ws = new WebSocket(SERVER + "?name=" + encodeURIComponent(pName));
   ws.onopen = () => {
     netStatus = "متصل";
+    $('chatState').textContent='متصل';
     console.log("به سرور وصل شد");
     sendPos(performance.now(), true);
   };
-  ws.onerror = () => { netStatus = "خطا در اتصال"; };
+  ws.onerror = () => { netStatus = "خطا در اتصال"; $('chatState').textContent='خطا در اتصال'; };
   ws.onclose = e => {
     netStatus = "قطع شد (کد " + e.code + ")";
+    $('chatState').textContent='قطع از سرور';
     console.log("از سرور قطع شد");
     for (const id in others) delete others[id];
   };
@@ -514,6 +529,10 @@ function connect() {
       if (m.e === "swing" && o) o.sw = 12;
       else if (m.e === "hurt" && o) { o.dm = 14; if (Math.abs(o.x - P.x) < 700) hurtSound(); }
       else if (m.e === "break") remoteBreak(m.tx, m.j, m.id_);
+    } else if (m.type === "chat") {
+      const chatName = String(m.name || "بازیکن").slice(0, 16);
+      const chatText = String(m.text || "").trim().slice(0, 180);
+      if (chatText && !chatText.startsWith("/")) say("<" + chatName + "> " + chatText);
     } else if (m.type === "player_left") {
       delete others[m.playerId];
     }
