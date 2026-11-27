@@ -290,7 +290,7 @@ function draw(){
  for(const p of parts)rc(p.x-cam,p.y,5,5,p.c);
  g.textAlign='center';g.font='bold 18px sans-serif';g.lineWidth=4;g.strokeStyle='#000';g.fillStyle='#ffe95c';
  for(const t of txt){g.globalAlpha=Math.min(1,t.l/20);g.strokeText(t.s,t.x-cam,t.y);g.fillText(t.s,t.x-cam,t.y)}
- g.globalAlpha=1;g.restore();drawSnow();drawNight();drawHUD2();
+ g.globalAlpha=1;g.restore();drawSnow();drawNight();drawHUD2();drawOnline();
 }
 const $=id=>document.getElementById(id),cp=$('cp'),ch=$('ch'),cl=$('cl'),ci=$('ci'),sl=$('sl'),ni=$('ni');
 function say(s,c){const l=document.createElement('div');l.textContent=s;if(c)l.style.color=c;cl.appendChild(l);while(cl.children.length>6)cl.firstChild.remove()}
@@ -335,7 +335,10 @@ function setOther(p, snap) {
 
 function connect() {
   ws = new WebSocket(SERVER + "?name=" + encodeURIComponent(pName));
-  ws.onopen = () => console.log("به سرور وصل شد");
+  ws.onopen = () => {
+    console.log("به سرور وصل شد");
+    sendPos(performance.now(), true);
+  };
   ws.onclose = () => {
     console.log("از سرور قطع شد");
     for (const id in others) delete others[id];
@@ -354,20 +357,24 @@ function connect() {
     } else if (m.type === "player_left") {
       delete others[m.playerId];
     }
+    console.log(m.type, "| بازیکن‌های دیگر:", Object.keys(others).length);
   };
 }
 
 // فرستادن موقعیت خودمان: حداکثر ۲۰ بار در ثانیه و فقط وقتی چیزی عوض شده
 let lastSent = { x: null, y: null, f: null }, lastSendT = 0;
-function sendPos(t) {
+function sendPos(t, force) {
   if (!ws || ws.readyState !== 1) return;
-  if (t - lastSendT < 50) return;
+  if (!force && t - lastSendT < 50) return;
   const x = Math.round(P.x), y = Math.round(P.y);
-  if (x === lastSent.x && y === lastSent.y && P.f === lastSent.f) return;
+  if (!force && x === lastSent.x && y === lastSent.y && P.f === lastSent.f) return;
   lastSendT = t;
   lastSent = { x, y, f: P.f };
   ws.send(JSON.stringify({ type: "move", x, y, facing: P.f }));
 }
+
+// پشتیبان: اگر زبانهٔ مرورگر در پس‌زمینه رفت و بازی ایستاد، باز هم موقعیت فرستاده شود
+setInterval(() => sendPos(performance.now()), 100);
 
 // حالت نمایشی بازیکن‌های دیگر: نرم حرکت می‌کنند و از روی تغییر موقعیت حالتشان فهمیده می‌شود
 function updOthers(d) {
@@ -384,6 +391,14 @@ function updOthers(d) {
     o.amp += ((moving && grounded ? 1 : 0) - o.amp) * .2;   // در هوا یا ایستاده: پاها ثابت
     o.wk += .25 * d;
   }
+}
+
+function drawOnline() {
+  if (!ws || ws.readyState !== 1) return;
+  g.textAlign = 'center'; g.font = 'bold 13px sans-serif'; g.lineWidth = 3;
+  g.strokeStyle = '#000'; g.fillStyle = '#fff';
+  const s = 'آنلاین: ' + (Object.keys(others).length + 1);
+  g.strokeText(s, W / 2, 20); g.fillText(s, W / 2, 20);
 }
 
 function drawOthers() {
