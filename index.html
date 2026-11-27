@@ -52,13 +52,16 @@ const cv=document.getElementById('c'),g=cv.getContext('2d');
 const H=450,T=40,GY=330;let W=800;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const trnd=mulberry32(20261123);
-const SN=1150,NT=540,WW=NT*T;
+const SN=1150,NT=660,WW=NT*T;
 const biomeRanges=[{end:SN,id:0}];
 (()=>{const r=mulberry32(20261128);let x=SN,last=-1;
  while(x<WW){let id;do{id=1+(r()*4|0)}while(id===last);
   const len=1200+(r()*2200|0);x=Math.min(WW,x+len);biomeRanges.push({end:x,id});last=id}
 })();
 const bio=x=>{x=Math.max(0,Math.min(WW-1,x));return biomeRanges.find(b=>x<b.end).id};
+// Village placement: choose a sufficiently long non-desert biome segment.
+const villageRange=biomeRanges.find((b,i)=>i>0&&biomeRanges[i-1].end>=2000&&b.id!==2&&b.end-biomeRanges[i-1].end>=900);
+const VILLAGE_X=(villageRange?biomeRanges[biomeRanges.indexOf(villageRange)-1].end:SN)+80;
 const hg=[];(()=>{let h=0;for(let i=0;i<NT;i++){const x=i*T,b=bio(x);if(x<80||(x>780&&x<1500)||(b===0&&trnd()<.25))h-=Math.sign(h);else if(trnd()<(b===2?.22:.48))h=Math.max(-3,Math.min(b===0?2:5,h+(trnd()<.5?-1:1)));hg.push(h)}})();
 function gy(x){return GY-hg[Math.max(0,Math.min(NT-1,Math.floor(x/T)))]*T}
 function go(x){return gy(x)-GY}
@@ -129,7 +132,7 @@ function blk(x,y,id,tx,j,bm,top){const sn=bm===0,st=['#8a8a8a','#777','#9b9b9b']
 const inv=new Proxy({},{get:(_,k)=>slots.reduce((a,s)=>s&&s.k===k?a+s.n:a,0),set:(_,k,v)=>{const c=inv[k];v>c?addItem(k,v-c):remItem(k,c-v);return true}});
 let trees=[],sheep=[],creepers=[],parts=[],txt=[],clouds=[],cam=1050,tm=0,shk=0;
 const R=Math.random;
-function rx(){let x;do x=150+R()*(WW-300);while(x>2850&&x<3700);return x}
+function rx(){let x;do x=150+R()*(WW-300);while(x>VILLAGE_X-80&&x<VILLAGE_X+800);return x}
 function addTree(x){trees.push({x,hp:5,sh:0})}
 function addSheep(x){if(bio(x)===2)return;sheep.push({x,y:GY-34,w:44,h:34,vx:0,wv:0,f:R()<.5?1:-1,hp:3,hurt:0,t:0,wk:0})}
 for(let i=0;i<14;i++){const x=300+i*190+trnd()*70;if(x<780||x>1500)addTree(x)};buildWorld();
@@ -139,10 +142,10 @@ for(let i=0;i<18;i++){const x=randomLandX();addSheep(x);addCow(randomLandX());}
 for(let i=0;i<22;i++)addChick(randomLandX());
 for(let i=0;i<16;i++)addCreeper(1600+i*850);
 const flowers=[];for(let x=SN+40;x<WW-100;x+=26+R()*60)if(bio(x)!==2&&bio(x)!==0&&R()<.72)flowers.push({x,c:R()<.5?0:R()<.5?1:2});
-const lamps=[300,1000,1700,2400,2880,3285,3480];
-const houses=[{x:2960,w:150,h:110},{x:3300,w:170,h:120},{x:830,w:130,h:105,sn:1},{x:1010,w:130,h:110,sn:1}];
-const farms=[{x:3130,w:140},{x:3490,w:90}];
-const vill=[[3115,'#7a4e26'],[3200,'#e8e8e8'],[3420,'#7a3f9a'],[850,'#e6eef5',1],[975,'#dfe6ee',1],[1060,'#cfd9e3',1]].map(a=>({x:a[0],c:a[1],sn:a[2],f:1,t:0,wv:0,wk:0,lo:a[2]?820:2930,hi:a[2]?1130:3570}));
+const lamps=[300,1000,1700,2400,VILLAGE_X+20,VILLAGE_X+350,VILLAGE_X+560];
+const houses=[{x:VILLAGE_X,w:150,h:110},{x:VILLAGE_X+340,w:170,h:120},{x:830,w:130,h:105,sn:1},{x:1010,w:130,h:110,sn:1}];
+const farms=[{x:VILLAGE_X+170,w:140},{x:VILLAGE_X+530,w:90}];
+const vill=[[VILLAGE_X+155,'#7a4e26'],[VILLAGE_X+240,'#e8e8e8'],[VILLAGE_X+460,'#7a3f9a'],[850,'#e6eef5',1],[975,'#dfe6ee',1],[1060,'#cfd9e3',1]].map(a=>({x:a[0],c:a[1],sn:a[2],f:1,t:0,wv:0,wk:0,lo:a[2]?820:VILLAGE_X-20,hi:a[2]?1130:VILLAGE_X+720}));
 for(let i=0;i<9;i++)clouds.push({x:R()*1600,y:20+R()*90,z:.7+R()*.8,s:.15+R()*.2});
 function burst(x,y,c,n){for(let i=0;i<n;i++)parts.push({x,y,vx:(R()-.5)*5,vy:-R()*5,c,l:30})}
 function pop(x,y,s){txt.push({x,y,s,l:60})}
@@ -205,7 +208,7 @@ function upd(d){if(!started||dead)return;
  for(const c of creepers){
   const dx=P.x-c.x,ad=Math.abs(dx);
   if(c.hurt>0)c.hurt-=d;c.x+=c.vx*d;c.vx*=.85;c.x=Math.min(c.x,2800);
-  if(ad<220&&(P.x<2900||P.x>3700)){c.f=Math.sign(dx)||1;if(ad>55){c.x+=c.f*1.1*d;c.wk+=.25*d;c.fz=0}else c.fz+=d}else c.fz=0;
+  if(ad<220&&(P.x<VILLAGE_X-50||P.x>VILLAGE_X+760)){c.f=Math.sign(dx)||1;if(ad>55){c.x+=c.f*1.1*d;c.wk+=.25*d;c.fz=0}else c.fz+=d}else c.fz=0;
   if(c.fz>60){creepers.splice(creepers.indexOf(c),1);boom(c);setTimeout(()=>addCreeper(rx()),12000);break}
  }
  if(shk>0)shk-=d;
