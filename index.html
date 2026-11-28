@@ -14,7 +14,7 @@ input,button{font:inherit;padding:8px;border:3px solid #3a2a1a;border-radius:4px
 button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity:.4}
 #tb{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));display:flex;gap:6px}
 #tb button{width:48px;height:48px;font-size:22px;padding:0}
-#cp,#ch{position:fixed;display:none;background:rgba(40,28,16,.92);color:#fff;border:3px solid #3a2a1a;border-radius:6px;font-size:14px;z-index:5}
+#pl{position:fixed;display:none;top:calc(64px + env(safe-area-inset-top,0px));right:8px;width:min(86vw,260px);max-height:60vh;overflow:auto;padding:6px;background:rgba(40,28,16,.92);color:#fff;border:3px solid #3a2a1a;border-radius:6px;font-size:14px;z-index:6}#cp,#ch{position:fixed;display:none;background:rgba(40,28,16,.92);color:#fff;border:3px solid #3a2a1a;border-radius:6px;font-size:14px;z-index:5}
 #cp{top:calc(64px + env(safe-area-inset-top,0px));right:8px;width:min(86vw,300px);max-height:60vh;overflow:auto;padding:6px}
 .r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 2px;border-bottom:1px solid #6b4a2a}
 .r small{display:block;opacity:.75;font-size:11px}
@@ -50,10 +50,10 @@ button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="nm"><div><b>اسم بازیکن چیه؟</b><input id="ni" maxlength="16" placeholder="Steve" autocomplete="off"><button id="ns">شروع بازی ⛏</button></div></div>
-<div id="tb"><button id="cb">🛠</button><button id="mb">💬</button><button id="adminBtn" title="پنل ادمین">👑</button></div>
+<div id="tb"><button id="pb">👥</button><button id="cb">🛠</button><button id="mb">💬</button><button id="adminBtn" title="پنل ادمین">👑</button></div>
 <div id="adminGate"><div class="admin-card"><b>🔐 ورود به پنل ادمین</b><small>رمز مخصوص ادمین را وارد کن</small><input id="adminPass" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="رمز عبور"><div style="display:flex;gap:8px"><button id="adminSubmit" style="flex:1">ورود</button><button id="adminCancel">لغو</button></div><div id="adminMsg"></div></div></div>
-<div id="adminPanel"><div class="admin-head"><span>👑 پنل ادمین mia70153993</span><button class="admin-close" id="adminPanelClose">✕</button></div><div class="admin-row"><button id="adminFlyToggle">✈️ شروع پرواز</button><button id="adminSpeedToggle">⚡ سرعت بیشتر: خاموش</button></div><div class="admin-row"><button id="adminUp">⬆ نگه‌دار: بالا</button><button id="adminDown">⬇ نگه‌دار: پایین</button></div><small id="adminInfo">حرکت: دکمه‌های چپ و راست. بالا/پایین را نگه دار تا ارتفاع تغییر کند. کیبورد: W/↑ و S/↓.</small><div class="admin-row"><button id="adminLock">🔒 قفل پنل ادمین</button></div></div>
-<div id="cp"></div><div id="hb"></div><div id="iv"><div id="ip"><div id="top"><canvas id="sk" width="80" height="110"></canvas><div id="cr"><div>ساخت</div><div id="gr"></div></div><div id="ar">➜</div><div id="ou"></div><div id="cu"></div><button id="xb">✕</button></div><div id="mn" class="g9"></div><div id="hr" class="g9"></div></div></div>
+<div id="adminPanel"><div class="admin-head"><span>👑 پنل ادمین mia70153993</span><button class="admin-close" id="adminPanelClose">✕</button></div><div class="admin-row"><button id="adminFlyToggle">✈️ شروع پرواز</button><button id="adminSpeedToggle">⚡ سرعت بیشتر: خاموش</button></div><div class="admin-row"><button id="adminUp">⬆ نگه‌دار: بالا</button><button id="adminDown">⬇ نگه‌دار: پایین</button></div><small id="adminInfo">حرکت: دکمه‌های چپ و راست. بالا/پایین را نگه دار تا ارتفاع تغییر کند. کیبورد: W/↑ و S/↓.</small><div class="admin-row"><button id="adminBotChat">💬 ربات چت: …</button><button id="adminBotAuto">🎮 ربات بازی: …</button></div><div class="admin-row"><button id="adminReset">🗑 ریست دنیا (حذف ساخته‌ها)</button></div><div class="admin-row"><button id="adminLock">🔒 قفل پنل ادمین</button></div></div>
+<div id="cp"></div><div id="pl"></div><div id="hb"></div><div id="iv"><div id="ip"><div id="top"><canvas id="sk" width="80" height="110"></canvas><div id="cr"><div>ساخت</div><div id="gr"></div></div><div id="ar">➜</div><div id="ou"></div><div id="cu"></div><button id="xb">✕</button></div><div id="mn" class="g9"></div><div id="hr" class="g9"></div></div></div>
 <div id="ch"><div id="chatHead"><b>💬 چت عمومی</b><span id="chatState">در انتظار اتصال…</span></div><div id="cl" aria-live="polite"></div><input id="ci" maxlength="180" placeholder="پیام بنویس یا /..." autocomplete="off"></div>
 <div class="b" id="sl" style="left:50%;margin-left:-36px;bottom:calc(96px + env(safe-area-inset-bottom,0px));display:none">😴<small>خواب</small></div>
 <div id="st"></div><div id="ps">☠ مسموم شدی!</div><div id="dd"><b>مُردی!</b><button id="rs">ریسپاون</button></div>
@@ -64,7 +64,7 @@ button{background:#d9a35c;color:#2a1d10;font-weight:bold}button:disabled{opacity
 <div class="b" data-k="dn" style="right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(96px + env(safe-area-inset-bottom,0px))">⬇<small>حفر</small></div>
 <script>
 const cv=document.getElementById('c'),g=cv.getContext('2d');
-const H=450,T=40,GY=330;let W=800;
+let H=450,CF=.7;const T=40,GY=330;let W=800;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const trnd=mulberry32(20261123);
 const NT=660,WW=NT*T;
@@ -95,7 +95,7 @@ const ITEMS={sand:'شن',cactus:'کاکتوس',wood:'چوب',meat:'گوشت',gun
 const ALIAS={gunpowder:'gun',planks:'wood',log:'wood',eggs:'egg',cobblestone:'stone',crafting_table:'table',craftingtable:'table'};
 const CC={sand:['#e3cf8a','#efdca0'],cactus:['#2e7d32','#43a047'],wood:['#7a4e26','#c19a5b'],meat:['#d9534f','#f08c88'],gun:['#555','#999'],egg:['#e8d9b0','#fff'],milk:['#8a8f99','#fff'],wool:['#eee','#fff'],dirt:['#8b5a2b','#9c6a3a'],table:['#a37640','#555'],axe:['#7a4e26','#aab'],pickaxe:['#7a4e26','#99a'],sword:['#aab','#fff'],cake:['#f6c6d8','#fff'],bed:['#c33','#fff'],stone:['#8a8a8a','#aaa'],coal:['#222','#555'],iron:['#d8a77a','#eec9a3'],spick:['#7a4e26','#8a8a8a'],furnace:['#777','#222'],chicken:['#e8c9a0','#fff0d8'],cmeat:['#8a4b2a','#c27b4f'],cchicken:['#b9772e','#e0a95a']};
 const REC=[['table',{wood:4},0],['axe',{wood:3},1],['pickaxe',{wood:3},1],['sword',{wood:2},1],['bed',{wood:3,wool:3},1],['cake',{milk:3,egg:1},1],['spick',{wood:2,stone:3},1],['furnace',{stone:8},1],['cmeat',{meat:1},0,1],['cchicken',{chicken:1},0,1]];
-function rs(){W=Math.max(560,Math.round(H*innerWidth/innerHeight));cv.width=W;cv.height=H;g.imageSmoothingEnabled=false}
+function rs(){const ph=Math.min(innerWidth,innerHeight)<500;H=ph?280:450;CF=ph?.5:.7;W=Math.max(560,Math.round(H*innerWidth/innerHeight));cv.width=W;cv.height=H;g.imageSmoothingEnabled=false}
 addEventListener('resize',rs);rs();
 addEventListener('contextmenu',e=>e.preventDefault());
 const K={},KM={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'j',ArrowDown:'dn',s:'dn',S:'dn',w:'j',W:'j',' ':'j',j:'h',J:'h',f:'h',F:'h',Enter:'h'};
@@ -143,10 +143,10 @@ function buildWorld(){const r=mulberry32(777);
  trees.forEach(t=>growTree(Math.floor(t.x/T),3+(r()*5|0)));trees.length=0;
  for(let tx=93;tx<NT-3;){const b=bio(tx*T);if(b===2){if(r()<.6)growCactus(tx,2+(r()*2|0))}else if(b!==0&&r()<(b===4?.78:b===3?.48:.22))growTree(tx,3+(r()*5|0));tx+=(b===4?2:3)+(r()*4|0)}}
 const held=()=>{const s=slots[sel];return s&&s.k};
-const BC={6:'#e3cf8a',12:'#2e7d32',1:'#62d03f',2:'#8b5a2b',3:'#8a8a8a',4:'#333',5:'#d8a77a',10:'#7a4e26',11:'#3aa83a'};
+const BC={7:'#b8864a',6:'#e3cf8a',12:'#2e7d32',1:'#62d03f',2:'#8b5a2b',3:'#8a8a8a',4:'#333',5:'#d8a77a',10:'#7a4e26',11:'#3aa83a'};
 function need(id,t){const pk=t==='pickaxe'||t==='spick';
  if(id<3||id===6)return pk?2:3;if(id===12)return 3;if(id===3)return t==='spick'?3:pk?4:12;if(id===4)return t==='spick'?3:pk?4:14;
- if(id===5)return t==='spick'?5:0;if(id===10)return t==='axe'?3:6;if(id===11)return t==='sword'?3:0;return 0}
+ if(id===5)return t==='spick'?5:0;if(id===10)return t==='axe'?3:6;if(id===11)return t==='sword'?3:0;if(id===7)return t==='axe'?3:5;return 0}
 function mine(ax,aj){if(tg&&tm-tg.t>60)tg=null;
  const jf=Math.floor((P.y+P.h-1-GY)/T);let tx,j;
  if(ax!==undefined){tx=ax;j=aj}else if(K.dn){tx=Math.floor((P.x+P.w/2)/T);j=jf+1}
@@ -158,13 +158,14 @@ function mine(ax,aj){if(tg&&tm-tg.t>60)tg=null;
  if(tg.n<h)return;tg=null;setB(tx,j,0);nev('break',{tx,j,id});
  if(id===10){for(let q=j-1;gb(tx,q)===10;q--){B[tx*JR+q+1+JO]=10;B[tx*JR+q+JO]=0}
   if(![0,1,2,3,4].some(q=>gb(tx,-hg[tx]-1-q)===10))setTimeout(()=>growTree(tx),30000)}
- const pk=t==='pickaxe'||t==='spick';let k={1:'dirt',2:'dirt',3:'stone',4:'coal',5:'iron',6:'sand',10:'wood',12:'cactus'}[id];
+ const pk=t==='pickaxe'||t==='spick';let k={1:'dirt',2:'dirt',3:'stone',4:'coal',5:'iron',6:'sand',7:'wood',10:'wood',12:'cactus'}[id];
  if((id===3||id===4)&&!pk){k=null;pop(px,py-10,'بدون کلنگ چیزی نمی‌دهد')}
  if(k){inv[k]=(inv[k]||0)+1;pop(px,py-10,'+1 '+ITEMS[k])}}
-function blk(x,y,id,tx,j,bm,top){const sn=bm===0,st=['#8a8a8a','#777','#9b9b9b'],C={1:['#8b5a2b','#7a4c22','#9c6a3a'],3:st,4:st,5:st,10:['#7a4e26','#5e3a1a','#8a5a2e'],11:sn?['#2a6b46','#1f5a3a','#f4f8ff']:bm===3?['#c8641e','#a8501a','#e08a2a']:bm===4?['#1f7a2a','#176620','#2a9035']:['#2e8b2e','#27762a','#3aa83a'],6:['#e3cf8a','#d4bd74','#efdca0'],12:['#2e7d32','#1b5e20','#43a047']},c=C[id]||C[1];
+function blk(x,y,id,tx,j,bm,top){const sn=bm===0,st=['#8a8a8a','#777','#9b9b9b'],C={1:['#8b5a2b','#7a4c22','#9c6a3a'],3:st,4:st,5:st,10:['#7a4e26','#5e3a1a','#8a5a2e'],11:sn?['#2a6b46','#1f5a3a','#f4f8ff']:bm===3?['#c8641e','#a8501a','#e08a2a']:bm===4?['#1f7a2a','#176620','#2a9035']:['#2e8b2e','#27762a','#3aa83a'],6:['#e3cf8a','#d4bd74','#efdca0'],7:['#b8864a','#a2733c','#c99a5c'],12:['#2e7d32','#1b5e20','#43a047']},c=C[id]||C[1];
  rc(x,y,T,T,c[0]);for(let a=0;a<5;a++)for(let b=0;b<5;b++){const h=hs(tx,a,j*5+b);if(h===0)rc(x+a*8,y+b*8,8,8,c[1]);else if(h===1)rc(x+a*8,y+b*8,8,8,c[2])}
  if(id===4||id===5)for(const k of [[6,8],[22,6],[12,22],[28,26]])rc(x+k[0],y+k[1],7,7,id===4?'#1c1c1c':'#d8a77a');
  if(id===10){rc(x+8,y,4,T,'#5e3a1a');rc(x+28,y,4,T,'#5e3a1a')}
+ if(id===7){rc(x,y+12,T,2,'#8a5a2a');rc(x,y+26,T,2,'#8a5a2a');rc(x,y+38,T,2,'#8a5a2a')}
  if(id===1&&top){rc(x,y,T,8,sn?'#f6faff':bm===3?'#a8872a':bm===4?'#3fa028':'#52b834');for(let a=0;a<5;a++)if(hs(tx,a,0)%2)rc(x+a*8,y,8,8,sn?'#e4eef7':bm===3?'#b89a3a':bm===4?'#4fb838':'#62d03f')}}
 const inv=new Proxy({},{get:(_,k)=>slots.reduce((a,s)=>s&&s.k===k?a+s.n:a,0),set:(_,k,v)=>{const c=inv[k];v>c?addItem(k,v-c):remItem(k,c-v);return true}});
 let trees=[],sheep=[],creepers=[],parts=[],txt=[],clouds=[],cam=1050,tm=0,shk=0;
@@ -276,7 +277,7 @@ function upd(d){if(!started||dead)return;
  parts=parts.filter(p=>p.l>0);
  for(const t of txt){t.y-=.6*d;t.l-=d}
  txt=txt.filter(t=>t.l>0);
- cam+=((P.x+P.w/2-W/2)-cam)*.15;cam=Math.max(0,Math.min(WW-W,cam));camY+=(Math.max(-2000,Math.min(GY+JM*T-H,P.y+P.h/2-H*.7))-camY)*.15;
+ cam+=((P.x+P.w/2-W/2)-cam)*.15;cam=Math.max(0,Math.min(WW-W,cam));camY+=(Math.max(-2000,Math.min(GY+JM*T-H,P.y+P.h/2-H*CF))-camY)*.15;
 }
 
 function hs(a,b,c){return(((a*73856093)^(b*19349663)^(c*83492791))>>>0)%7}
@@ -369,16 +370,17 @@ function drawSheep(s){
  rc(16,6,14,14,'#c8a98b');rc(16,3,14,5,wl);rc(25,10,3,3,'#222');rc(20,15,8,3,'#a98a6c');
  g.restore();
 }
-function arm(a,ph){g.save();g.translate(0,20);g.rotate(a);rc(-4,0,8,12,'#00a8a8');rc(-4,12,8,16,'#c68863');g.restore()}
-function leg(a){g.save();g.translate(0,48);g.rotate(a);rc(-4,0,8,30,'#3b3b9b');rc(-4,24,8,6,'#555');g.restore()}
+function arm(a,ph,c){g.save();g.translate(0,20);g.rotate(a);rc(-4,0,8,12,c||'#00a8a8');rc(-4,12,8,16,'#c68863');g.restore()}
+function leg(a,c){g.save();g.translate(0,48);g.rotate(a);rc(-4,0,8,30,c||'#3b3b9b');rc(-4,24,8,6,'#555');g.restore()}
 function drawChar(P){
  g.save();g.translate(Math.round(P.x+P.w/2-cam),Math.round(P.y));g.scale(P.f,1);
  const w=Math.sin(P.wk)*P.amp*.8,q=P.sw>0?-1.7*Math.sin(P.sw/12*Math.PI):0;
- arm(-w*.9,0);leg(-w);
- rc(-7,18,14,30,'#00a8a8');
- rc(-9,0,18,18,'#c68863');rc(-9,0,18,6,'#4a2f1a');rc(-9,6,5,8,'#4a2f1a');
+ const L=P.look||{},SC=L.s,PC=L.p,HC=L.h||'#4a2f1a';
+ arm(-w*.9,0,SC);leg(-w,PC);
+ rc(-7,18,14,30,SC||'#00a8a8');
+ rc(-9,0,18,18,'#c68863');rc(-9,0,18,6,HC);rc(-9,6,5,8,HC);
  rc(2,9,5,4,'#fff');rc(4,9,3,4,'#3a4bbf');rc(-1,14,8,2,'#9a6a4c');
- leg(w);arm(w*.9+q,1);if(P.dm>0){g.fillStyle='rgba(255,40,40,'+Math.min(.55,P.dm/18)+')';g.fillRect(-9,0,18,48);g.fillRect(-4,48,8,30)}
+ leg(w,PC);arm(w*.9+q,1,SC);if(P.dm>0){g.fillStyle='rgba(255,40,40,'+Math.min(.55,P.dm/18)+')';g.fillRect(-9,0,18,48);g.fillRect(-4,48,8,30)}
  g.restore();
 }
 function drawPlayer(){drawChar(P)}
@@ -491,6 +493,7 @@ function setOther(p, snap) {
     snap = true;
   }
   o.name = p.name;
+  o.look = p.look; o.bot = !!p.bot;
   o.f = p.facing;
   o.tx = p.x;          // مقصدی که سرور گفته
   o.ty = p.y;
@@ -519,7 +522,7 @@ function connect() {
     if (m.type === "welcome") {
       myId = m.player.id;
       m.players.forEach(p => setOther(p, true));
-      if (Array.isArray(m.blocks)) m.blocks.forEach(b => remoteBreak(b[0], b[1], b[2]));
+      if (Array.isArray(m.blocks)) m.blocks.forEach(b => b[0] ? remotePlace(b[1], b[2], b[3], 1) : remoteBreak(b[1], b[2], b[3], 1));
     } else if (m.type === "player_joined") {
       setOther(m.player, true);
     } else if (m.type === "player_moved") {
@@ -529,12 +532,19 @@ function connect() {
       if (m.e === "swing" && o) o.sw = 12;
       else if (m.e === "hurt" && o) { o.dm = 14; if (Math.abs(o.x - P.x) < 700) hurtSound(); }
       else if (m.e === "break") remoteBreak(m.tx, m.j, m.id_);
+      else if (m.e === "place") remotePlace(m.tx, m.j, m.id_);
     } else if (m.type === "chat") {
       const chatName = String(m.name || "بازیکن").slice(0, 16);
       const chatText = String(m.text || "").trim().slice(0, 180);
-      if (chatText && !chatText.startsWith("/")) say("<" + chatName + "> " + chatText);
+      if (chatText && !chatText.startsWith("/")) say("<" + chatName + "> " + chatText, m.bot ? "#9fd8ff" : undefined);
     } else if (m.type === "player_left") {
       delete others[m.playerId];
+    } else if (m.type === "bot_status") {
+      botState.chat = !!m.chat; botState.auto = !!m.auto; botState.left = m.aiLeft; refreshBotButtons();
+    } else if (m.type === "world_reset") {
+      location.reload();
+    } else if (m.type === "admin_error") {
+      say("⚠ " + m.error, "#f88"); serverToken = null;
     }
     console.log(m.type, "| بازیکن‌های دیگر:", Object.keys(others).length);
   };
@@ -547,11 +557,17 @@ function nev(e, x) {
   if (o.id !== undefined) { o.id_ = o.id; delete o.id; }   // id بلوک با id بازیکن قاطی نشود
   ws.send(JSON.stringify(o));
 }
+// گذاشتن بلوک توسط بازیکن دیگر
+function remotePlace(tx, j, id, q) {
+  if (gb(tx, j) !== 0 || tx < 1 || tx >= NT - 1 || !(id >= 2 && id <= 7)) return;
+  if (!q) burst(tx * T + 20, GY + j * T + 20, BC[id] || '#888', 5);
+  setB(tx, j, id);
+}
 // شکستن بلوک توسط بازیکن دیگر
-function remoteBreak(tx, j, id) {
+function remoteBreak(tx, j, id, q) {
   if (!(gb(tx, j) > 0)) return;
   const px = tx * T + 20, py = GY + j * T;
-  burst(px, py + 20, BC[gb(tx, j)] || '#888', 6);
+  if (!q) burst(px, py + 20, BC[gb(tx, j)] || '#888', 6);
   setB(tx, j, 0);
   if (id === 10) {
     for (let q = j - 1; gb(tx, q) === 10; q--) { B[tx * JR + q + 1 + JO] = 10; B[tx * JR + q + JO] = 0; }
@@ -608,9 +624,51 @@ function drawOthers() {
     drawChar(o);
     g.textAlign = 'center'; g.font = 'bold 12px sans-serif'; g.lineWidth = 3;
     g.strokeStyle = '#000'; g.fillStyle = '#fff';
-    g.strokeText(o.name, sx, o.y - 8); g.fillText(o.name, sx, o.y - 8);
+    const nm = (o.bot ? '🤖 ' : '') + o.name; g.strokeText(nm, sx, o.y - 8); g.fillText(nm, sx, o.y - 8);
   }
 }
+
+
+// ---- لیست بازیکن‌های آنلاین + کنترل ربات‌ها ----
+const pb = $('pb'), pl = $('pl');
+function renderPlayers() {
+  pl.textContent = '';
+  const rows = [{ name: pName + ' (تو)', bot: false }].concat(Object.values(others).map(o => ({ name: o.name, bot: o.bot })));
+  for (const r of rows) {
+    const d = document.createElement('div'); d.className = 'r';
+    d.textContent = (r.bot ? '🤖 ' : '🟢 ') + r.name; pl.appendChild(d);
+  }
+}
+pb.onclick = () => { pl.style.display = pl.style.display === 'block' ? 'none' : 'block'; renderPlayers(); };
+setInterval(() => pl.style.display === 'block' && renderPlayers(), 700);
+
+const botState = { chat: false, auto: false, left: null };
+let serverToken = null;
+function refreshBotButtons() {
+  $('adminBotChat').textContent = '💬 ربات چت: ' + (botState.chat ? 'روشن' : 'خاموش');
+  $('adminBotAuto').textContent = '🎮 ربات بازی: ' + (botState.auto ? 'روشن' : 'خاموش');
+  $('adminBotChat').classList.toggle('on', botState.chat);
+  $('adminBotAuto').classList.toggle('on', botState.auto);
+  if (botState.left != null) $('adminInfo').textContent = 'سهمیهٔ AI امروز: ' + botState.left + ' پیام باقی مانده';
+}
+function askToken() {
+  if (!serverToken) serverToken = (prompt('توکن ادمین سرور (ADMIN_TOKEN):') || '').trim() || null;
+  return serverToken;
+}
+$('adminReset').onclick = () => {
+  if (!adminUnlocked || !ws || ws.readyState !== 1) return;
+  if (!confirm('همهٔ بلوک‌های گذاشته و شکسته‌شده برای همه پاک می‌شود. مطمئنی؟')) return;
+  if (!askToken()) return;
+  ws.send(JSON.stringify({ type: 'admin', action: 'reset_world', token: serverToken }));
+};
+function toggleBot(kind) {
+  if (!adminUnlocked || !ws || ws.readyState !== 1) return;
+  if (!askToken()) return;
+  ws.send(JSON.stringify({ type: 'admin', action: 'set_bot', bot: kind, on: !botState[kind], token: serverToken }));
+}
+$('adminBotChat').onclick = () => toggleBot('chat');
+$('adminBotAuto').onclick = () => toggleBot('auto');
+$('adminBtn').addEventListener('click', () => { if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type: 'admin', action: 'status' })); });
 
 
 // ---- اینونتوری و ساخت ----
@@ -653,7 +711,17 @@ function stat(){const k=hp+'|'+food;if(k===stKey)return;stKey=k;let h='',f='';fo
 // ---- لمس/کلیک روی هر بلوک برای شکستن (تا فاصلهٔ حدود ۳ بلوک) ----
 let aim=null,mdown=false;
 function setAim(e){const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W+cam,y=(e.clientY-r.top)/r.height*H+camY;aim={tx:Math.floor(x/T),j:Math.floor((y-GY)/T)}}
-function tapMine(){const{tx,j}=aim;if(!(gb(tx,j)>0))return;const dx=tx*T+T/2-(P.x+P.w/2),dy=GY+j*T+T/2-(P.y+P.h/2);
+const PLACE={dirt:2,stone:3,coal:4,iron:5,sand:6,wood:7};
+function tryPlace(tx,j){const k=held(),id=PLACE[k];if(!id)return;
+ if(tx<1||tx>=NT-1||j<-JO||j>=JM-1||gb(tx,j)!==0)return;
+ const dx=tx*T+T/2-(P.x+P.w/2),dy=GY+j*T+T/2-(P.y+P.h/2);
+ if(dx*dx+dy*dy>130*130){if(tm-(tapMine.w||-99)>40){tapMine.w=tm;pop(P.x,P.y-10,'دور است')}return}
+ const bx=tx*T,by=GY+j*T;
+ if(bx<P.x+P.w&&bx+T>P.x&&by<P.y+P.h&&by+T>P.y){pop(P.x,P.y-10,'جای خودت است!');return}
+ if(!(gb(tx-1,j)>0||gb(tx+1,j)>0||gb(tx,j-1)>0||gb(tx,j+1)>0)){pop(P.x,P.y-10,'باید کنار یک بلوک باشد');return}
+ remItem(k,1);setB(tx,j,id);nev('place',{tx,j,id});burst(tx*T+20,GY+j*T+20,BC[id],5);
+ P.f=dx>=0?1:-1;P.cd=18;P.sw=12;nev('swing');mdown=false}
+function tapMine(){const{tx,j}=aim;if(!(gb(tx,j)>0)){tryPlace(tx,j);return}const dx=tx*T+T/2-(P.x+P.w/2),dy=GY+j*T+T/2-(P.y+P.h/2);
  if(dx*dx+dy*dy>130*130){if(tm-(tapMine.w||-99)>40){tapMine.w=tm;pop(P.x,P.y-10,'دور است')}return}
  P.f=dx>=0?1:-1;P.cd=18;P.sw=12;nev('swing');mine(tx,j)}
 cv.addEventListener('pointerdown',e=>{if(!started||iv.style.display==='flex')return;mdown=true;setAim(e)});
